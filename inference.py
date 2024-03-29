@@ -34,17 +34,18 @@ def main(webcam = True, video_path = ''):
     else: cap = cv2.VideoCapture(video_path)
 
     # Gerando um vídeo de saída com os resultados da inferência
-    output = cv2.VideoWriter('output-inferece.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (640 * 2, 480))
+    output = cv2.VideoWriter('output-inference.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (640 * 2, 480))
 
     # Verificar se conseguimos capturar o vídeo de entrada corretamente
     if not cap.isOpened():
-        print("Erro ao abrir a webcam")
+        print("Erro ao abrir vídeo de entrada!")
         return
 
     # Loop para capturar o vídeo de entrada frame a frame
     while True:
         # Intera sobre o próximo frame do vídeo de entrada
         ret, image = cap.read()
+
         # Redimesiona o frame atual 
         image = cv2.resize(image, dsize = [640, 480])
         # Pega uma cópia da imagem original de entrada
@@ -89,7 +90,7 @@ def main(webcam = True, video_path = ''):
         output.write(cv2.hconcat(src = [image_original, depth]))
 
         # Verifica se a tecla 'q' foi pressionada para sair do loop
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(30) & 0xFF == ord('q'):
             break
 
     # Liberar a webcam e fechar todas as janelas
@@ -99,4 +100,4 @@ def main(webcam = True, video_path = ''):
 
 # Chamar a função para inicializar a inferência em vídeo
 if __name__ == "__main__":
-    main()
+    main(webcam = False, video_path = 'examples_video/man_walking.mp4')
