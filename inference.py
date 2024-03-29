@@ -33,6 +33,9 @@ def main(webcam = True, video_path = ''):
     # Conecta a uma saída de vídeo para realizar inferências 
     else: cap = cv2.VideoCapture(video_path)
 
+    # Gerando um vídeo de saída com os resultados da inferência
+    output = cv2.VideoWriter('output-inferece.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30, (640 * 2, 480))
+
     # Verificar se conseguimos capturar o vídeo de entrada corretamente
     if not cap.isOpened():
         print("Erro ao abrir a webcam")
@@ -70,7 +73,7 @@ def main(webcam = True, video_path = ''):
         depth = cv2.cvtColor(depth, cv2.COLOR_GRAY2RGB)
 
         # Coloca um título no frame original
-        cv2.putText(img = image_original, text = 'Vídeo Original', org = (10, 30), 
+        cv2.putText(img = image_original, text = 'Entrada Original', org = (10, 30), 
                     fontFace = cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1, color = (255, 255, 255), 
                     thickness = 2)
         
@@ -82,6 +85,8 @@ def main(webcam = True, video_path = ''):
 
         # Mostra na tela os resultados com o frame Atual
         cv2.imshow('Depth Anything', cv2.hconcat(src = [image_original, depth]))
+        # Escrevendo o frame atual no vídeo de saída
+        output.write(cv2.hconcat(src = [image_original, depth]))
 
         # Verifica se a tecla 'q' foi pressionada para sair do loop
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -89,6 +94,7 @@ def main(webcam = True, video_path = ''):
 
     # Liberar a webcam e fechar todas as janelas
     cap.release()
+    output.release()
     cv2.destroyAllWindows()
 
 # Chamar a função para inicializar a inferência em vídeo
